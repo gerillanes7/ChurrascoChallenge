@@ -1,24 +1,41 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, {useGlobal, useEffect, useState} from 'reactn';
+import Login from './components/Login'
+import Sites from './components/Sites'
+
 
 function App() {
+  const [token, setToken] = useGlobal('token')
+  const [loggedIn, setLoggedIn] = useState(false)
+
+  useEffect(() => {
+    if (localStorage.getItem('Bearer') !== "") {
+      setToken(localStorage.getItem('Bearer'))
+    }
+  }, [])
+
+  useEffect(() => {
+    if (token) {
+      setLoggedIn(true)
+    } else {
+      setLoggedIn(false)
+    }
+  }, [token])
+
+  const isAuthenticated = () => {
+    if ( loggedIn ) {
+      return (
+        <Sites />
+      )
+    } else {
+      return (
+        <Login />
+      )
+    }
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      {isAuthenticated()}
     </div>
   );
 }
